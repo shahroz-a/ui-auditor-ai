@@ -1,0 +1,17 @@
+:root {
+  --surface: 255 255 255;
+  --surface-muted: 247 248 251;
+  --text: 16 24 40;
+  --text-muted: 82 96 113;
+  --line: 211 218 230;
+  --focus: 25 169 116;
+}
+
+.dark {
+  --surface: 18 24 32;
+  --surface-muted: 25 33 43;
+  --text: 247 248 251;
+  --text-muted: 177 187 200;
+  --line: 55 65 81;
+  --focus: 50 213 147;
+}
