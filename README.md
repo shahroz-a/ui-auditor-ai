@@ -125,7 +125,7 @@ Built for product engineers, designers, and reviewers who want UI quality checks
 
 ## Built By
 
-Built by [Shahroz](https://www.shahrozahmad.com) from [AIERLabs](https://www.aierlabs.com).
+Built by [Shahroz](https://www.shahrozahmad.com) from [Aier Labs](https://www.aierlabs.com).
 
 - Portfolio: https://www.shahrozahmad.com
 - LinkedIn: https://www.linkedin.com/in/shahroz-a/

@@ -684,7 +684,7 @@ export function AuditorShell() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              AIERLabs
+              Aier Labs
             </a>
           </span>
           <a
