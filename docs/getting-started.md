@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node.js 20.11 or newer.
+- Node.js 20.19 or newer.
 - npm 10.2 or newer.
 
 ## Install
