@@ -1,0 +1,45 @@
+- name: good first issue
+  color: "7057ff"
+  description: A small, well-scoped contribution
+- name: help wanted
+  color: "008672"
+  description: Maintainer-approved community work
+- name: bug
+  color: "d73a4a"
+  description: Something is not working
+- name: enhancement
+  color: "a2eeef"
+  description: A new capability or improvement
+- name: documentation
+  color: "0075ca"
+  description: Docs, examples, or guides
+- name: performance
+  color: "fbca04"
+  description: Speed, memory, or bundle-size work
+- name: accessibility
+  color: "0e8a16"
+  description: Keyboard, screen reader, contrast, or WCAG work
+- name: ui
+  color: "c5def5"
+  description: Visual design and interface polish
+- name: backend
+  color: "bfdadc"
+  description: Server, API, or infrastructure work
+- name: frontend
+  color: "c2e0c6"
+  description: Client-side app work
+- name: discussion
+  color: "d4c5f9"
+  description: Needs design or product conversation
+- name: question
+  color: "cc317c"
+  description: Usage, architecture, or contribution question
+- name: duplicate
+  color: "cfd3d7"
+  description: Already reported
+- name: invalid
+  color: "e4e669"
+  description: Not actionable as reported
+- name: wontfix
+  color: "ffffff"
+  description: Intentionally not planned

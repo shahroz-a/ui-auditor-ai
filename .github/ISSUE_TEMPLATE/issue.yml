@@ -1,0 +1,19 @@
+name: General issue
+description: Open a focused issue that does not fit another template.
+title: "[Issue]: "
+labels: ["discussion"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What should change?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Add screenshots, links, or examples when helpful.
+    validations:
+      required: false
