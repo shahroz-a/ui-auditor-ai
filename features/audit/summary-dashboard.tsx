@@ -42,13 +42,13 @@ export function SummaryDashboard({ report, viewportReports, visualStatus }: Summ
   const weakestViewport = viewportReports.slice().sort((first, second) => first.scores.overall - second.scores.overall)[0];
 
   return (
-    <section aria-labelledby="summary-title" className="grid gap-5 rounded-lg border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-950">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+    <section aria-labelledby="summary-title" className="grid min-w-0 gap-5 rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-950 sm:p-5">
+      <div className="flex min-w-0 flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
           <h2 className="text-base font-semibold text-slate-950 dark:text-white" id="summary-title">
             Audit report
           </h2>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+          <p className="mt-1 break-words text-sm text-slate-600 dark:text-slate-300">
             {report.image.name} · {report.viewport.label}
           </p>
         </div>
@@ -59,7 +59,7 @@ export function SummaryDashboard({ report, viewportReports, visualStatus }: Summ
 
       <div className="grid gap-5 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-center">
         <ScoreRing label="Overall score" score={report.scores.overall} />
-        <div className="grid gap-4">
+        <div className="grid min-w-0 gap-4">
           <Alert
             title={report.summary.totalFindings === 0 ? "Analysis complete" : "Review suggested"}
             tone={report.summary.totalFindings === 0 ? "success" : report.summary.critical > 0 ? "danger" : "warning"}
@@ -76,7 +76,7 @@ export function SummaryDashboard({ report, viewportReports, visualStatus }: Summ
         </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid min-w-0 gap-3 md:grid-cols-4">
         <div className="rounded-lg border border-slate-200 p-4 dark:border-slate-800">
           <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Severity</p>
           <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
@@ -124,14 +124,14 @@ export function SummaryDashboard({ report, viewportReports, visualStatus }: Summ
       ) : null}
 
       {bestViewport && weakestViewport ? (
-        <div className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-slate-800">
-          <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="grid min-w-0 gap-3 rounded-lg border border-slate-200 p-4 dark:border-slate-800">
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Responsive score summary</h3>
             <span className="text-sm text-slate-600 dark:text-slate-300">
               Best {bestViewport.viewport.label} · Weakest {weakestViewport.viewport.label}
             </span>
           </div>
-          <div className="grid gap-2 sm:grid-cols-4">
+          <div className="grid min-w-0 gap-2 sm:grid-cols-4">
             {viewportReports.map((viewportReport) => (
               <div className="rounded-md bg-slate-50 p-3 dark:bg-slate-900" key={viewportReport.viewport.width}>
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{viewportReport.viewport.label}</p>

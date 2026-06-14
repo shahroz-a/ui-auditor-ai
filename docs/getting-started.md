@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node.js 20.19 or newer.
+- Node.js 22.0 or newer.
 - npm 10.2 or newer.
 
 ## Install
@@ -34,3 +34,4 @@ npm run test:e2e
 - If Playwright browsers are missing, run `npx playwright install`.
 - If URL capture is unavailable, take a manual screenshot and upload or paste it.
 - If an image fails to decode, export the screenshot again as PNG or WebP.
+- If a Cloudflare Pages or Workers deploy fails during `npx wrangler deploy`, confirm the build is using Node.js 22 or newer. The repository pins Cloudflare and CI builds through `.node-version`; if the Cloudflare dashboard also defines `NODE_VERSION`, set it to `22.16.0` or remove it so the checked-in version file is honored.

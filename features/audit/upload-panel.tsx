@@ -21,19 +21,19 @@ export function UploadPanel({ image, isLoading, onFile, onPaste, onReset }: Uplo
   return (
     <Card aria-labelledby="upload-title">
       <CardHeader>
-        <div className="flex items-start justify-between gap-4">
-          <div>
+        <div className="grid gap-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
+          <div className="min-w-0">
             <h2 className="text-base font-semibold text-slate-950 dark:text-white" id="upload-title">
               Screenshot
             </h2>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Upload, paste, replace, or reset.</p>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <Button icon={<ClipboardPaste aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={onPaste}>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:items-center">
+            <Button className="min-w-0" icon={<ClipboardPaste aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={onPaste}>
               Paste
             </Button>
             {image ? (
-              <Button icon={<RotateCcw aria-hidden="true" className="h-4 w-4" />} variant="ghost" onClick={onReset}>
+              <Button className="min-w-0" icon={<RotateCcw aria-hidden="true" className="h-4 w-4" />} variant="ghost" onClick={onReset}>
                 Reset
               </Button>
             ) : null}

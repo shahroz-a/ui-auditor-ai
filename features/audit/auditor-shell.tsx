@@ -381,8 +381,8 @@ export function AuditorShell() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-5 sm:px-6 lg:px-8" onPaste={onClipboardPaste}>
-      <div className="mx-auto grid w-full max-w-[1800px] gap-6">
+    <main className="min-h-screen overflow-x-hidden px-3 py-4 sm:px-6 sm:py-5 lg:px-8" onPaste={onClipboardPaste}>
+      <div className="mx-auto grid w-full min-w-0 max-w-[1800px] gap-5 sm:gap-6">
         <header className="flex flex-col gap-4 rounded-lg border border-white/80 bg-white/90 p-4 shadow-soft backdrop-blur dark:border-slate-800 dark:bg-slate-950/88 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <Image alt="" className="h-11 w-11 shrink-0" height={44} priority src="/logo.svg" width={44} />
@@ -391,7 +391,7 @@ export function AuditorShell() {
               <p className="text-sm text-slate-600 dark:text-slate-300">Local screenshot audits with explainable issue overlays.</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             <Badge tone="success">Browser-only</Badge>
             <Badge tone="neutral">No API keys</Badge>
             <Button
@@ -404,8 +404,8 @@ export function AuditorShell() {
           </div>
         </header>
 
-        <section className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)_390px] xl:items-start">
-          <div className="grid gap-5 xl:sticky xl:top-5">
+        <section className="grid min-w-0 gap-5 sm:gap-6 xl:grid-cols-[minmax(300px,340px)_minmax(0,1fr)_minmax(320px,390px)] xl:items-start">
+          <div className="grid min-w-0 gap-5 xl:sticky xl:top-5">
             <UploadPanel
               image={image}
               isLoading={state.status === "loading"}
@@ -597,14 +597,14 @@ export function AuditorShell() {
                       </Button>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                     {previewModes.map((item) => {
                       const Icon = item.icon;
 
                       return (
                         <button
                           className={cn(
-                            "inline-flex h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600",
+                            "inline-flex h-10 min-w-0 items-center justify-center gap-2 rounded-md border px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600",
                             mode === item.value
                               ? "border-mint-600 bg-mint-50 text-mint-700 dark:bg-mint-950 dark:text-mint-200"
                               : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-900"
@@ -614,25 +614,25 @@ export function AuditorShell() {
                           onClick={() => setMode(item.value)}
                         >
                           <Icon aria-hidden="true" className="h-4 w-4" />
-                          {item.label}
+                          <span className="truncate">{item.label}</span>
                         </button>
                       );
                     })}
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button disabled={!report} icon={<FileJson aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("json")}>
+                  <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                    <Button className="min-w-0" disabled={!report} icon={<FileJson aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("json")}>
                       JSON
                     </Button>
-                    <Button disabled={!report} icon={<FileText aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("markdown")}>
+                    <Button className="min-w-0" disabled={!report} icon={<FileText aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("markdown")}>
                       Markdown
                     </Button>
-                    <Button disabled={!report} icon={<FileSpreadsheet aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("csv")}>
+                    <Button className="min-w-0" disabled={!report} icon={<FileSpreadsheet aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("csv")}>
                       CSV
                     </Button>
-                    <Button disabled={!report || !image} icon={<Download aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("png")}>
+                    <Button className="min-w-0" disabled={!report || !image} icon={<Download aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("png")}>
                       PNG
                     </Button>
-                    <Button disabled={!report} icon={<Printer aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("pdf")}>
+                    <Button className="min-w-0 sm:col-span-1" disabled={!report} icon={<Printer aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={() => void runExport("pdf")}>
                       PDF
                     </Button>
                   </div>
@@ -661,7 +661,7 @@ export function AuditorShell() {
             </Card>
           </div>
 
-          <div className="xl:max-h-[calc(100vh-2.5rem)] xl:resize-x xl:overflow-auto">
+          <div className="min-w-0 xl:max-h-[calc(100vh-2.5rem)] xl:resize-x xl:overflow-auto">
             <IssueExplorer report={report} selectedFindingId={effectiveSelectedFindingId} onSelectFinding={setSelectedFindingId} />
           </div>
         </section>

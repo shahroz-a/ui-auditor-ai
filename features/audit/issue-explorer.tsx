@@ -137,8 +137,8 @@ export function IssueExplorer({ onSelectFinding, report, selectedFindingId }: Is
 
   return (
     <aside aria-labelledby="issues-title" className="grid gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
           <h2 className="text-base font-semibold text-slate-950 dark:text-white" id="issues-title">
             Issue explorer
           </h2>
@@ -163,7 +163,7 @@ export function IssueExplorer({ onSelectFinding, report, selectedFindingId }: Is
             {severities.map((value) => (
               <button
                 className={cn(
-                  "rounded-md border px-2.5 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600",
+                  "inline-flex h-9 items-center rounded-md border px-3 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600",
                   severity === value
                     ? "border-mint-600 bg-mint-50 text-mint-700 dark:bg-mint-950 dark:text-mint-200"
                     : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900"
@@ -183,7 +183,7 @@ export function IssueExplorer({ onSelectFinding, report, selectedFindingId }: Is
             {categories.map((value) => (
               <button
                 className={cn(
-                  "rounded-md border px-2.5 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600",
+                  "inline-flex h-9 items-center rounded-md border px-3 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600",
                   category === value
                     ? "border-mint-600 bg-mint-50 text-mint-700 dark:bg-mint-950 dark:text-mint-200"
                     : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900"
@@ -219,7 +219,7 @@ export function IssueExplorer({ onSelectFinding, report, selectedFindingId }: Is
               <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-slate-900 text-xs font-bold text-white dark:bg-white dark:text-slate-950">
                 {index + 1}
               </span>
-              <span>
+              <span className="min-w-0">
                 <span className="block text-sm font-semibold text-slate-900 dark:text-white">{finding.title}</span>
                 <span className="mt-1 block text-xs leading-5 text-slate-600 dark:text-slate-300">{finding.recommendation}</span>
               </span>

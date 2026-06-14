@@ -155,8 +155,8 @@ function ImagePlane({
   const findings = report?.findings ?? [];
 
   return (
-    <div className="grid gap-2">
-      <div className="relative mx-auto w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950">
+    <div className="grid min-w-0 gap-2">
+      <div className="relative mx-auto w-full min-w-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950">
         <Image
           alt={`Screenshot preview: ${image.name}`}
           className="block h-auto max-h-[64vh] w-full object-contain"
@@ -178,12 +178,12 @@ function ImagePlane({
             ))
           : null}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
         <span>
           {image.width}x{image.height}px
         </span>
         {report ? (
-          <span className="flex items-center gap-2">
+          <span className="flex min-w-0 items-center gap-2">
             <Badge tone={report.summary.totalFindings === 0 ? "success" : "warning"}>
               {report.summary.totalFindings} issue{report.summary.totalFindings === 1 ? "" : "s"}
             </Badge>
@@ -204,7 +204,7 @@ export function AnnotatedPreview({
 }: AnnotatedPreviewProps) {
   if (!image) {
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-950">
+      <div className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-950 sm:p-5">
         <EmptyState
           description="Upload or paste a screenshot to see issue locations, comparison modes, and exportable annotations."
           title="No screenshot loaded"
@@ -215,7 +215,7 @@ export function AnnotatedPreview({
 
   if (mode === "split") {
     return (
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid min-w-0 gap-4 lg:grid-cols-2">
         <ImagePlane
           annotated={false}
           image={image}
