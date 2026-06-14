@@ -519,15 +519,17 @@ export function AuditorShell() {
                 ) : (
                   <ul className="grid gap-3 text-sm">
                     {history.map((item) => (
-                      <li className="rounded-md bg-slate-50 p-3 dark:bg-slate-900" key={item.id}>
-                        <div className="flex items-start justify-between gap-3">
-                          <span className="min-w-0">
+                      <li className="min-w-0 rounded-md bg-slate-50 p-3 dark:bg-slate-900" key={item.id}>
+                        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+                          <span className="block min-w-0 overflow-hidden">
                             <span className="block truncate font-semibold text-slate-900 dark:text-white">{item.imageName}</span>
                             <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">
                               {formatDate(item.createdAt)} · {item.viewport}
                             </span>
                           </span>
-                          <Badge tone={item.findings === 0 ? "success" : "warning"}>{item.score}</Badge>
+                          <Badge className="max-w-14 justify-center" tone={item.findings === 0 ? "success" : "warning"}>
+                            {item.score}
+                          </Badge>
                         </div>
                       </li>
                     ))}
@@ -661,7 +663,7 @@ export function AuditorShell() {
             </Card>
           </div>
 
-          <div className="min-w-0 xl:max-h-[calc(100vh-2.5rem)] xl:resize-x xl:overflow-auto">
+          <div className="min-w-0 xl:sticky xl:top-5">
             <IssueExplorer report={report} selectedFindingId={effectiveSelectedFindingId} onSelectFinding={setSelectedFindingId} />
           </div>
         </section>

@@ -34,3 +34,47 @@ test("audited state does not overflow at the smallest viewport", async ({ page }
 
   expect(horizontalOverflow).toBeLessThanOrEqual(0);
 });
+
+test("long screenshot names and the issue rail stay within their columns", async ({ page }) => {
+  const longScreenshotName = "Screenshot 2026-06-14 at 8.24.24 PM with an intentionally long filename.png";
+
+  await page.setViewportSize({ width: 1440, height: 1200 });
+  await page.goto("/");
+
+  await page.locator('input[type="file"]').setInputFiles({
+    buffer: onePixelPng,
+    mimeType: "image/png",
+    name: longScreenshotName
+  });
+
+  await expect(page.getByRole("heading", { name: "Audit report" })).toBeVisible();
+  const recentAudits = page.getByRole("heading", { name: "Recent audits" }).locator("xpath=ancestor::section[1]");
+  await expect(recentAudits.getByText(longScreenshotName)).toBeVisible();
+
+  const layout = await page.evaluate(() => {
+    const recentTitle = Array.from(document.querySelectorAll("h2")).find((heading) => heading.textContent === "Recent audits");
+    const recentCard = recentTitle?.closest("section");
+    const recentItem = recentCard?.querySelector("li");
+    const issueRail = document.querySelector<HTMLElement>('[aria-labelledby="issues-title"]')?.parentElement;
+
+    function rightOverflow(container: Element | null | undefined, child: Element | null | undefined): number {
+      if (!container || !child) {
+        return 0;
+      }
+
+      return child.getBoundingClientRect().right - container.getBoundingClientRect().right;
+    }
+
+    return {
+      documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      issueRailResize: issueRail ? window.getComputedStyle(issueRail).resize : "missing",
+      issueRailOverflow: issueRail ? issueRail.scrollWidth - issueRail.clientWidth : 0,
+      recentItemOverflow: rightOverflow(recentCard, recentItem)
+    };
+  });
+
+  expect(layout.documentOverflow).toBeLessThanOrEqual(0);
+  expect(layout.issueRailOverflow).toBeLessThanOrEqual(0);
+  expect(layout.issueRailResize).toBe("none");
+  expect(layout.recentItemOverflow).toBeLessThanOrEqual(0);
+});

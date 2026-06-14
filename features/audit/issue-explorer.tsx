@@ -136,7 +136,7 @@ export function IssueExplorer({ onSelectFinding, report, selectedFindingId }: Is
   }
 
   return (
-    <aside aria-labelledby="issues-title" className="grid gap-4">
+    <aside aria-labelledby="issues-title" className="grid min-w-0 gap-4">
       <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-base font-semibold text-slate-950 dark:text-white" id="issues-title">
@@ -207,11 +207,11 @@ export function IssueExplorer({ onSelectFinding, report, selectedFindingId }: Is
       </div>
 
       {topFixes.length > 0 ? (
-        <section className="grid gap-2 rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-950">
+        <section className="grid min-w-0 gap-2 rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-950">
           <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Top fixes</h3>
           {topFixes.map((finding, index) => (
             <button
-              className="flex items-start gap-3 rounded-md p-2 text-left transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600 dark:hover:bg-slate-900"
+              className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-3 rounded-md p-2 text-left transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600 dark:hover:bg-slate-900"
               key={finding.id}
               type="button"
               onClick={() => onSelectFinding(finding.id)}
@@ -248,27 +248,27 @@ export function IssueExplorer({ onSelectFinding, report, selectedFindingId }: Is
           />
         </div>
       ) : (
-        <div className="grid gap-3">
+        <div className="grid min-w-0 gap-3">
           {categories
             .filter((value): value is AuditCategory => value !== "all")
             .filter((value) => (groupedFindings[value]?.length ?? 0) > 0)
             .map((value) => (
               <details
-                className="rounded-lg border border-slate-200 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-950"
+                className="min-w-0 rounded-lg border border-slate-200 bg-white shadow-soft dark:border-slate-800 dark:bg-slate-950"
                 key={value}
                 open
               >
                 <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-600 dark:text-white">
                   {categoryLabels[value]} ({groupedFindings[value]?.length ?? 0})
                 </summary>
-                <div className="grid gap-3 border-t border-slate-200 p-3 dark:border-slate-800">
+                <div className="grid min-w-0 gap-3 border-t border-slate-200 p-3 dark:border-slate-800">
                   {(groupedFindings[value] ?? []).map((finding) => {
                     const state = findingStates[finding.id] ?? "active";
 
                     return (
                       <article
                         className={cn(
-                          "rounded-md border p-3 transition",
+                          "min-w-0 rounded-md border p-3 transition",
                           selectedFindingId === finding.id
                             ? "border-mint-600 bg-mint-50 dark:bg-mint-950"
                             : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950",
