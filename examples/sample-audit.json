@@ -1,0 +1,26 @@
+{
+  "id": "audit_sample",
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "image": {
+    "name": "sample-dashboard.png",
+    "size": 1024000,
+    "type": "image/png",
+    "width": 1440,
+    "height": 1024
+  },
+  "summary": {
+    "totalFindings": 0,
+    "critical": 0,
+    "major": 0,
+    "minor": 0,
+    "info": 0
+  },
+  "scores": {
+    "overall": 100,
+    "accessibility": 100,
+    "spacing": 100,
+    "typography": 100,
+    "layout": 100,
+    "performance": 100
+  }
+}
