@@ -16,7 +16,7 @@ Open http://localhost:3000.
 
 ## First Audit
 
-Upload a PNG, JPG, or WebP screenshot. The app validates the file locally, reads image dimensions, runs the ruleset, and renders a report with score breakdowns and findings.
+Upload or paste a PNG, JPG, JPEG, WebP, or AVIF screenshot. The app validates the file locally, reads image dimensions, samples pixels in the browser when available, runs the ruleset, and renders a report with score breakdowns, annotations, and findings.
 
 ## Useful Commands
 
@@ -32,4 +32,5 @@ npm run test:e2e
 
 - If `npm ci` fails, remove stale package manager files and reinstall with npm.
 - If Playwright browsers are missing, run `npx playwright install`.
+- If URL capture is unavailable, take a manual screenshot and upload or paste it.
 - If an image fails to decode, export the screenshot again as PNG or WebP.

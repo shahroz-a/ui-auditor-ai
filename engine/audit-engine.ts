@@ -1,5 +1,12 @@
 import { rules } from "@/rules";
-import type { AuditFinding, AuditReport, AuditStatus, ImageMetadata } from "@/types/audit";
+import type {
+  AuditFinding,
+  AuditReport,
+  AuditStatus,
+  AuditViewport,
+  ImageMetadata,
+  VisualMetrics
+} from "@/types/audit";
 import { calculateScoreBreakdown, summarizeFindings } from "@/engine/score";
 
 function hashString(value: string): string {
@@ -25,8 +32,33 @@ function statusForFindings(findings: AuditFinding[]): AuditStatus {
   return "pass";
 }
 
-export function analyzeImage(image: ImageMetadata, createdAt = new Date().toISOString()): AuditReport {
-  const findings = rules.flatMap((rule) => rule.evaluate({ image }));
+export interface AnalyzeImageOptions {
+  metrics?: VisualMetrics;
+  viewport?: AuditViewport;
+}
+
+function uploadedViewportForImage(image: ImageMetadata): AuditViewport {
+  return {
+    width: image.width,
+    height: image.height,
+    label: `${image.width}px upload`,
+    source: "uploaded"
+  };
+}
+
+export function analyzeImage(
+  image: ImageMetadata,
+  createdAt = new Date().toISOString(),
+  options: AnalyzeImageOptions = {}
+): AuditReport {
+  const viewport = options.viewport ?? uploadedViewportForImage(image);
+  const findings = rules.flatMap((rule) =>
+    rule.evaluate({
+      image,
+      metrics: options.metrics,
+      viewport
+    })
+  );
   const checks = rules.map((rule) => {
     const ruleFindings = findings.filter((finding) => finding.ruleId === rule.id);
 
@@ -39,9 +71,11 @@ export function analyzeImage(image: ImageMetadata, createdAt = new Date().toISOS
   });
 
   return {
-    id: `audit_${hashString(`${image.name}:${image.width}:${image.height}:${image.size}`)}`,
+    id: `audit_${hashString(`${image.name}:${image.width}:${image.height}:${image.size}:${viewport.width}`)}`,
     createdAt,
     image,
+    viewport,
+    metrics: options.metrics,
     summary: summarizeFindings(findings),
     checks,
     findings,

@@ -1,7 +1,8 @@
 import type { UploadError } from "@/types/image";
 
-export const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"] as const;
-export const MAX_IMAGE_BYTES = 12 * 1024 * 1024;
+export const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp", "image/avif"] as const;
+export const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
+export const MAX_IMAGE_PIXELS = 36_000_000;
 
 export function formatBytes(bytes: number): string {
   if (bytes === 0) {
@@ -28,7 +29,7 @@ export function validateImageFile(file: File): UploadError | null {
     return {
       code: "unsupported-format",
       title: "Unsupported format",
-      message: "Use a PNG, JPG, or WebP screenshot."
+      message: "Use a PNG, JPG, JPEG, WebP, or AVIF screenshot."
     };
   }
 

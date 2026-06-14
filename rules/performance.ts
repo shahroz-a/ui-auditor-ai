@@ -18,6 +18,15 @@ export const performanceRules: RuleDefinition[] = [
           category: "performance",
           severity: "minor",
           status: "warning",
+          confidence: 0.92,
+          scoreImpact: 7,
+          region: {
+            x: 0,
+            y: 0,
+            width: 1,
+            height: 1,
+            label: "Screenshot file"
+          },
           title: "Screenshot is heavy",
           description: "Large captures slow local analysis and make pull request review harder.",
           recommendation: "Compress the image or crop unrelated browser chrome before sharing the audit."

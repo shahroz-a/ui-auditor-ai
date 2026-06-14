@@ -1,8 +1,11 @@
 export type AuditCategory =
   | "accessibility"
+  | "components"
   | "spacing"
   | "typography"
   | "layout"
+  | "quality"
+  | "responsive"
   | "performance";
 
 export type AuditSeverity = "info" | "minor" | "major" | "critical";
@@ -18,12 +21,48 @@ export interface ImageMetadata {
   lastModified?: number;
 }
 
+export interface AuditRegion {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+}
+
+export interface AuditViewport {
+  width: number;
+  height: number;
+  label: string;
+  source: "uploaded" | "estimated" | "custom";
+}
+
+export interface VisualMetrics {
+  sampleWidth: number;
+  sampleHeight: number;
+  averageLuminance: number;
+  contrastSpread: number;
+  edgeDensity: number;
+  busyRegionRatio: number;
+  blankEdgeRatio: number;
+  edgeCrowding: number;
+  horizontalBalance: number;
+  verticalBalance: number;
+  colorComplexity: number;
+  leftActivity: number;
+  rightActivity: number;
+  topActivity: number;
+  bottomActivity: number;
+}
+
 export interface AuditFinding {
   id: string;
   ruleId: string;
   category: AuditCategory;
   severity: AuditSeverity;
   status: Exclude<AuditStatus, "pass">;
+  confidence: number;
+  scoreImpact: number;
+  region: AuditRegion;
   title: string;
   description: string;
   recommendation: string;
@@ -39,9 +78,12 @@ export interface RuleCheck {
 export interface ScoreBreakdown {
   overall: number;
   accessibility: number;
+  components: number;
   spacing: number;
   typography: number;
   layout: number;
+  quality: number;
+  responsive: number;
   performance: number;
 }
 
@@ -57,6 +99,8 @@ export interface AuditReport {
   id: string;
   createdAt: string;
   image: ImageMetadata;
+  viewport: AuditViewport;
+  metrics?: VisualMetrics;
   summary: AuditSummary;
   checks: RuleCheck[];
   findings: AuditFinding[];
@@ -65,6 +109,8 @@ export interface AuditReport {
 
 export interface RuleContext {
   image: ImageMetadata;
+  viewport: AuditViewport;
+  metrics?: VisualMetrics;
 }
 
 export interface RuleDefinition {

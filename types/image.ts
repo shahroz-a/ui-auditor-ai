@@ -6,6 +6,8 @@ export interface UploadedImage extends ImageMetadata {
 
 export type UploadErrorCode =
   | "browser-unsupported"
+  | "clipboard-empty"
+  | "clipboard-permission"
   | "corrupted-image"
   | "huge-image"
   | "invalid-image"

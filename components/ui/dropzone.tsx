@@ -57,7 +57,7 @@ export function Dropzone({ disabled = false, onFile }: DropzoneProps) {
         <span>
           <span className="block text-base font-semibold text-slate-950 dark:text-white">Upload screenshot</span>
           <span className="mt-1 block text-sm text-slate-600 dark:text-slate-300">
-            PNG, JPG, or WebP up to {formatBytes(MAX_IMAGE_BYTES)}
+            PNG, JPG, WebP, or AVIF up to {formatBytes(MAX_IMAGE_BYTES)}
           </span>
         </span>
       </span>

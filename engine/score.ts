@@ -8,9 +8,12 @@ import type {
 
 const categoryWeights: Record<AuditCategory, number> = {
   accessibility: 1.5,
+  components: 0.9,
   spacing: 1,
   typography: 1,
   layout: 1,
+  quality: 0.8,
+  responsive: 1.2,
   performance: 0.85
 };
 
@@ -23,9 +26,12 @@ const severityPenalties: Record<AuditSeverity, number> = {
 
 const categories: AuditCategory[] = [
   "accessibility",
+  "components",
   "spacing",
   "typography",
   "layout",
+  "quality",
+  "responsive",
   "performance"
 ];
 
@@ -57,7 +63,7 @@ export function calculateCategoryScore(
   const penalty = findings
     .filter((finding) => finding.category === category)
     .reduce((total, finding) => {
-      return total + severityPenalties[finding.severity] * categoryWeights[category];
+      return total + (finding.scoreImpact || severityPenalties[finding.severity]) * categoryWeights[category];
     }, 0);
 
   return clampScore(100 - penalty);
@@ -71,9 +77,12 @@ export function calculateScoreBreakdown(findings: AuditFinding[]): ScoreBreakdow
     }),
     {
       accessibility: 100,
+      components: 100,
       spacing: 100,
       typography: 100,
       layout: 100,
+      quality: 100,
+      responsive: 100,
       performance: 100
     }
   );
@@ -82,9 +91,12 @@ export function calculateScoreBreakdown(findings: AuditFinding[]): ScoreBreakdow
     return total + categoryScores[category] * categoryWeights[category];
   }, 0);
   const totalWeight = categories.reduce((total, category) => total + categoryWeights[category], 0);
+  const globalPenalty = findings.reduce((total, finding) => {
+    return total + (finding.scoreImpact || severityPenalties[finding.severity]) * 0.18;
+  }, 0);
 
   return {
-    overall: clampScore(weightedTotal / totalWeight),
+    overall: clampScore(weightedTotal / totalWeight - globalPenalty),
     ...categoryScores
   };
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { ClipboardPaste, RotateCcw } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -13,10 +13,11 @@ export interface UploadPanelProps {
   image?: UploadedImage;
   isLoading: boolean;
   onFile: (file: File) => void;
+  onPaste: () => void;
   onReset: () => void;
 }
 
-export function UploadPanel({ image, isLoading, onFile, onReset }: UploadPanelProps) {
+export function UploadPanel({ image, isLoading, onFile, onPaste, onReset }: UploadPanelProps) {
   return (
     <Card aria-labelledby="upload-title">
       <CardHeader>
@@ -25,13 +26,18 @@ export function UploadPanel({ image, isLoading, onFile, onReset }: UploadPanelPr
             <h2 className="text-base font-semibold text-slate-950 dark:text-white" id="upload-title">
               Screenshot
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Local image analysis only.</p>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Upload, paste, replace, or reset.</p>
           </div>
-          {image ? (
-            <Button icon={<RotateCcw aria-hidden="true" className="h-4 w-4" />} variant="ghost" onClick={onReset}>
-              Reset
+          <div className="flex shrink-0 items-center gap-2">
+            <Button icon={<ClipboardPaste aria-hidden="true" className="h-4 w-4" />} variant="secondary" onClick={onPaste}>
+              Paste
             </Button>
-          ) : null}
+            {image ? (
+              <Button icon={<RotateCcw aria-hidden="true" className="h-4 w-4" />} variant="ghost" onClick={onReset}>
+                Reset
+              </Button>
+            ) : null}
+          </div>
         </div>
       </CardHeader>
       <CardBody className="grid gap-5">
@@ -40,7 +46,7 @@ export function UploadPanel({ image, isLoading, onFile, onReset }: UploadPanelPr
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
               <Image
                 alt={`Uploaded screenshot: ${image.name}`}
-                className="max-h-[420px] w-full object-contain"
+                className="max-h-40 w-full object-contain"
                 height={image.height}
                 src={image.previewUrl}
                 unoptimized
@@ -65,6 +71,7 @@ export function UploadPanel({ image, isLoading, onFile, onReset }: UploadPanelPr
                 <dd className="font-semibold text-slate-950 dark:text-white">{image.type.replace("image/", "").toUpperCase()}</dd>
               </div>
             </dl>
+            <Dropzone disabled={isLoading} onFile={onFile} />
           </div>
         ) : (
           <Dropzone disabled={isLoading} onFile={onFile} />

@@ -27,12 +27,16 @@
 
 ## Features
 
-- Local screenshot upload with zero-byte, unsupported format, oversized file, and corrupted image recovery.
-- Deterministic audit engine for responsive coverage, touch target context, typography review quality, screenshot weight, and layout aspect ratio.
-- Weighted score breakdown across accessibility, spacing, typography, layout, and performance.
-- Reusable UI primitives: Button, Card, Badge, Alert, Dialog, Input, Dropzone, Progress, ScoreRing, EmptyState, ErrorState, and LoadingState.
+- Local screenshot upload, drag-and-drop, file replacement, and clipboard paste.
+- PNG, JPG, JPEG, WebP, and AVIF validation with zero-byte, unsupported format, oversized file, and decode recovery.
+- Browser-only canvas sampling for contrast spread, visual density, edge crowding, layout balance, and screenshot quality signals.
+- Deterministic audit engine with issue regions, confidence, score impact, recommendations, and severity colors.
+- Annotated screenshot review with original, annotated, split, grid, spacing guide, and typography baseline modes.
+- Responsive review modes for 320, 375, 390, 414, 768, 1024, 1280, 1440, and custom widths.
+- Issue explorer with search, severity/category filters, top fixes, click-to-focus, resolved/ignored states, and copyable summaries.
+- Local exports for annotated PNG, printable PDF, JSON, Markdown, and CSV.
+- URL capture fallback that explains browser security limits and keeps an extension capture path ready.
 - Dark-mode-ready styles, visible focus states, semantic regions, and reduced-motion support.
-- JSON export for audit artifacts that can be attached to issues, pull requests, or design reviews.
 
 ## Installation
 
@@ -43,7 +47,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000 and upload a PNG, JPG, or WebP screenshot.
+Open http://localhost:3000 and upload or paste a PNG, JPG, JPEG, WebP, or AVIF screenshot.
 
 ## Architecture
 
@@ -90,7 +94,10 @@ npm run test:e2e
 ## FAQ
 
 **Does this upload images to a server?**  
-No. The current app reads image dimensions and metadata in the browser.
+No. The current app reads image metadata and samples pixels in the browser. It does not send screenshots to an API, backend, database, or cloud worker.
+
+**Can it capture any URL directly?**
+Not from a normal web page. Browsers block arbitrary cross-origin screenshots, so URL analysis explains the limitation and points users to upload, paste, or future extension capture.
 
 **Is this a replacement for manual design review?**  
 No. It catches review risks and makes them visible before a human signs off.
@@ -116,7 +123,9 @@ Performance notes live in [docs/performance.md](docs/performance.md).
 
 Built for product engineers, designers, and reviewers who want UI quality checks to happen before regressions reach users.
 
-## Built By Shahroz
+## Built By
+
+Built by [Shahroz](https://www.shahrozahmad.com) from [Aier Labs](https://www.aierlabs.com).
 
 - Portfolio: https://www.shahrozahmad.com
 - LinkedIn: https://www.linkedin.com/in/shahroz-a/

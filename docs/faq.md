@@ -2,15 +2,19 @@
 
 ## Does UI Auditor AI use remote AI APIs?
 
-Not in the current version. The audit engine is deterministic and local-first.
+No. The audit engine is deterministic and local-first. It uses browser APIs and local rules rather than paid AI APIs, remote image analysis, or a backend.
 
 ## What image formats are supported?
 
-PNG, JPG, and WebP.
+PNG, JPG, JPEG, WebP, and AVIF.
 
 ## What viewport widths should I test?
 
-Use 320, 375, 390, 768, 1024, 1280, 1440, and larger desktop widths when relevant.
+Use 320, 375, 390, 414, 768, 1024, 1280, 1440, and custom widths when relevant.
+
+## Why can't the app capture every URL directly?
+
+Browser security prevents a normal web app from screenshotting arbitrary external sites. Use upload or paste today; a browser extension can plug into the capture adapter later.
 
 ## Can I use this in a private product workflow?
 
