@@ -18,6 +18,27 @@ Open http://localhost:3000.
 
 Upload or paste a PNG, JPG, JPEG, WebP, or AVIF screenshot. The app validates the file locally, reads image dimensions, samples pixels in the browser when available, runs the ruleset, and renders a report with score breakdowns, annotations, and findings.
 
+## CLI Audit
+
+Use the CLI when you want an artifact for CI or an LLM coding agent:
+
+```bash
+npm run audit -- audit ./screenshots/dashboard.png --viewport 1440 --format json
+npm run audit -- audit ./screenshots/mobile.png --viewport 390 --format markdown --out audit.md
+```
+
+The CLI is local and metadata-only today. Use it to catch viewport, aspect-ratio, resolution, and format issues before handing work to an agent.
+
+## MCP Server
+
+Use the MCP server when an LLM client should call UI Auditor AI directly:
+
+```bash
+npm run mcp
+```
+
+See [LLM Integration](llm-integration.md) for configuration and agent prompts.
+
 ## Useful Commands
 
 ```bash
@@ -26,6 +47,8 @@ npm run typecheck
 npm run test
 npm run build
 npm run test:e2e
+npm run audit -- audit ./screenshots/example.png --viewport 1440
+npm run mcp
 ```
 
 ## Troubleshooting

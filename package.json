@@ -6,6 +6,11 @@
   "license": "MIT",
   "type": "module",
   "private": false,
+  "bin": {
+    "ui-auditor-ai": "./bin/ui-auditor.mjs",
+    "ui-auditor": "./bin/ui-auditor.mjs",
+    "ui-auditor-mcp": "./bin/ui-auditor-mcp.mjs"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shahroz-a/ui-auditor-ai.git"
@@ -32,6 +37,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "audit": "node bin/ui-auditor.mjs",
+    "mcp": "node bin/ui-auditor-mcp.mjs",
     "repo:check": "node scripts/check-repository.mjs",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },

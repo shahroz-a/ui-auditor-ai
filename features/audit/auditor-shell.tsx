@@ -20,7 +20,7 @@ import {
   Sparkles
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useMemo, useState, type ClipboardEvent as ReactClipboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ClipboardEvent as ReactClipboardEvent } from "react";
 
 import { browserUrlProvider, type UrlCaptureResult } from "@/capture/url-provider";
 import { Alert } from "@/components/ui/alert";
@@ -51,6 +51,8 @@ import type { AuditViewport, VisualMetrics } from "@/types/audit";
 const viewportPresets = [320, 375, 390, 414, 768, 1024, 1280, 1440] as const;
 const historyKey = "ui-auditor-ai-history";
 const viewportKey = "ui-auditor-ai-viewport";
+const desktopRailClassName =
+  "min-w-0 xl:sticky xl:top-5 xl:h-[var(--audit-rail-height)] xl:overflow-x-hidden xl:overflow-y-auto xl:overscroll-contain xl:pr-1 xl:[scrollbar-gutter:stable]";
 
 const previewModes: Array<{
   icon: typeof ImageIcon;
@@ -141,6 +143,7 @@ function formatDate(value: string): string {
 export function AuditorShell() {
   const { pasteFromClipboard, reset, state, upload } = useImageUpload();
   const image = state.status === "ready" ? state.image : undefined;
+  const middleColumnRef = useRef<HTMLDivElement>(null);
   const [activeWidth, setActiveWidth] = useState(loadInitialViewport);
   const [auditCreatedAt, setAuditCreatedAt] = useState(() => new Date().toISOString());
   const [customWidth, setCustomWidth] = useState(String(activeWidth));
@@ -148,10 +151,14 @@ export function AuditorShell() {
   const [hasManualViewport, setHasManualViewport] = useState(false);
   const [history, setHistory] = useState<AuditHistoryItem[]>([]);
   const [mode, setMode] = useState<PreviewMode>("annotated");
+  const [railHeight, setRailHeight] = useState<number | null>(null);
   const [selectedFindingId, setSelectedFindingId] = useState<string | undefined>();
   const [url, setUrl] = useState("");
   const [urlResult, setUrlResult] = useState<UrlCaptureResult | null>(null);
   const [visualState, setVisualState] = useState<VisualState>({ status: "idle" });
+  const railStyle = {
+    "--audit-rail-height": railHeight ? `${railHeight}px` : "calc(100vh - 9rem)"
+  } as CSSProperties;
 
   const metrics = visualState.status === "ready" ? visualState.metrics : undefined;
   const effectiveWidth = image && !hasManualViewport ? nearestViewport(image.width) : activeWidth;
@@ -196,6 +203,41 @@ export function AuditorShell() {
   useEffect(() => {
     const timer = window.setTimeout(() => setHistory(loadHistory()), 0);
     return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const element = middleColumnRef.current;
+    if (!element) {
+      return;
+    }
+
+    let frame = 0;
+    const syncRailHeight = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const nextHeight = Math.ceil(element.getBoundingClientRect().height);
+        setRailHeight((current) => (current === nextHeight ? current : nextHeight));
+      });
+    };
+
+    syncRailHeight();
+    window.addEventListener("resize", syncRailHeight);
+
+    if (typeof ResizeObserver === "undefined") {
+      return () => {
+        window.cancelAnimationFrame(frame);
+        window.removeEventListener("resize", syncRailHeight);
+      };
+    }
+
+    const observer = new ResizeObserver(syncRailHeight);
+    observer.observe(element);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", syncRailHeight);
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -405,7 +447,7 @@ export function AuditorShell() {
         </header>
 
         <section className="grid min-w-0 gap-5 sm:gap-6 xl:grid-cols-[minmax(300px,340px)_minmax(0,1fr)_minmax(320px,390px)] xl:items-start">
-          <div className="grid min-w-0 gap-5 xl:sticky xl:top-5">
+          <div className={cn("grid gap-5", desktopRailClassName)} data-testid="audit-left-rail" style={railStyle}>
             <UploadPanel
               image={image}
               isLoading={state.status === "loading"}
@@ -539,7 +581,7 @@ export function AuditorShell() {
             </Card>
           </div>
 
-          <div className="grid min-w-0 gap-5">
+          <div className="grid min-w-0 gap-5" data-testid="audit-middle-column" ref={middleColumnRef}>
             {report ? (
               <SummaryDashboard report={report} viewportReports={viewportReports} visualStatus={visualState.status} />
             ) : (
@@ -663,7 +705,7 @@ export function AuditorShell() {
             </Card>
           </div>
 
-          <div className="min-w-0 xl:sticky xl:top-5">
+          <div className={desktopRailClassName} data-testid="audit-issue-rail" style={railStyle}>
             <IssueExplorer report={report} selectedFindingId={effectiveSelectedFindingId} onSelectFinding={setSelectedFindingId} />
           </div>
         </section>

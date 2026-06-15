@@ -5,7 +5,7 @@
 <h1 align="center">UI Auditor AI</h1>
 
 <p align="center">
-  Local-first screenshot audits for accessibility, spacing, typography, layout quality, and review readiness.
+  Local-first screenshot audits for developers, LLM coding agents, and product teams fixing UI regressions.
 </p>
 
 <p align="center">
@@ -36,6 +36,8 @@
 - Issue explorer with search, severity/category filters, top fixes, click-to-focus, resolved/ignored states, and copyable summaries.
 - Local exports for annotated PNG, printable PDF, JSON, Markdown, and CSV.
 - URL capture fallback that explains browser security limits and keeps an extension capture path ready.
+- Local CLI for JSON or Markdown audit reports that can be handed to coding agents.
+- Stdio MCP server so LLM clients can audit screenshots without a hosted backend.
 - Dark-mode-ready styles, visible focus states, semantic regions, and reduced-motion support.
 
 ## Installation
@@ -49,6 +51,32 @@ npm run dev
 
 Open http://localhost:3000 and upload or paste a PNG, JPG, JPEG, WebP, or AVIF screenshot.
 
+## Developer And LLM Workflows
+
+UI Auditor AI can run as a local browser app, a CLI, or an MCP server. The intended loop is:
+
+1. Capture a product screenshot with Playwright, Storybook, Cypress, or manually.
+2. Run a local audit at the viewport being reviewed.
+3. Give the report to an LLM coding agent.
+4. Let the agent patch the product UI, rerun the screenshot, and re-audit.
+
+CLI:
+
+```bash
+npm run audit -- audit ./screenshots/dashboard.png --viewport 1440 --format json
+npm run audit -- audit ./screenshots/mobile.png --viewport 390 --format markdown --out audit.md
+```
+
+MCP:
+
+```bash
+npm run mcp
+```
+
+The CLI and MCP server are local-only and do not upload screenshots. They currently run metadata-based checks in Node; use the browser app for pixel-sampled overlays and visual-density findings.
+
+Read [docs/llm-integration.md](docs/llm-integration.md) for MCP config, CI examples, and agent prompts.
+
 ## Architecture
 
 The app is split by responsibility instead of by framework convention alone:
@@ -58,6 +86,8 @@ The app is split by responsibility instead of by framework convention alone:
 - `components/ui/` contains reusable primitives.
 - `engine/` turns image metadata and rule results into reports.
 - `rules/` holds small, testable quality rules.
+- `bin/` exposes the local CLI and MCP entry points.
+- `lib/node-audit.mjs` contains the Node metadata audit adapter used by CLI/MCP.
 - `hooks/` owns browser state such as object URLs and upload lifecycle.
 - `types/` defines the report, finding, rule, and upload contracts.
 
@@ -71,9 +101,10 @@ The repository includes a generated hero screenshot at [public/hero-screenshot.s
 
 - Pixel sampling for contrast and color-token drift.
 - OCR-assisted typography checks.
-- Batch audits for multiple breakpoints.
+- Batch audits for multiple breakpoints through CLI and MCP.
 - GitHub pull request annotations.
-- Shareable report URLs with redacted image handling.
+- Before/after screenshot comparison for coding agents.
+- Browser pixel metrics in the Node integration path.
 
 See [ROADMAP.md](ROADMAP.md) for the maintained roadmap.
 
