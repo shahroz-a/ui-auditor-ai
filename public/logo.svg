@@ -6,5 +6,5 @@
   <path d="M76 38H90V52" stroke="#E6EDF6" stroke-width="8" stroke-linecap="round"/>
   <path d="M90 76V90H76" stroke="#E6EDF6" stroke-width="8" stroke-linecap="round"/>
   <path d="M52 90H38V76" stroke="#E6EDF6" stroke-width="8" stroke-linecap="round"/>
-  <path d="M39 66L56 83L91 45" stroke="#22C99A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M44 66L58 80L84 52" stroke="#22C99A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

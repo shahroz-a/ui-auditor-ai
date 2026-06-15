@@ -47,18 +47,24 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 
 export function serializeReportAsMarkdown(report: AuditReport): string {
   const findings = report.findings
-    .map(
-      (finding, index) => `### ${index + 1}. ${finding.title}
+    .map((finding, index) => {
+      const evidence = finding.evidence?.length
+        ? `
+- Evidence:
+${finding.evidence.map((item) => `  - ${item}`).join("\n")}`
+        : "";
+
+      return `### ${index + 1}. ${finding.title}
 
 - Severity: ${finding.severity}
 - Category: ${finding.category}
 - Confidence: ${Math.round(finding.confidence * 100)}%
 - Impact: ${finding.scoreImpact}
 - Region: ${finding.region.label}
-- Recommendation: ${finding.recommendation}
+- Fix: ${finding.fixPrompt ?? finding.recommendation}${evidence}
 
-${finding.description}`
-    )
+${finding.description}`;
+    })
     .join("\n\n");
 
   return `# UI Auditor AI Report
@@ -100,7 +106,9 @@ export function serializeReportAsCsv(report: AuditReport): string {
       "region",
       "title",
       "description",
-      "recommendation"
+      "recommendation",
+      "fixPrompt",
+      "evidence"
     ],
     ...report.findings.map((finding) => [
       finding.id,
@@ -111,7 +119,9 @@ export function serializeReportAsCsv(report: AuditReport): string {
       finding.region.label,
       finding.title,
       finding.description,
-      finding.recommendation
+      finding.recommendation,
+      finding.fixPrompt ?? "",
+      finding.evidence?.join(" ") ?? ""
     ])
   ];
 
@@ -154,6 +164,8 @@ export async function exportAnnotatedPng(image: UploadedImage, report: AuditRepo
     const height = finding.region.height * image.height;
     const pinSize = Math.max(28, Math.round(image.width * 0.026));
     const isSelected = finding.id === selectedFindingId;
+    const anchorX = Math.max(pinSize / 2, Math.min(image.width - pinSize / 2, x + width / 2));
+    const anchorY = Math.max(pinSize / 2, Math.min(image.height - pinSize / 2, y + height / 2));
 
     context.strokeStyle = color;
     context.fillStyle = `${color}${isSelected ? "33" : "22"}`;
@@ -161,11 +173,11 @@ export async function exportAnnotatedPng(image: UploadedImage, report: AuditRepo
     context.strokeRect(x, y, width, height);
     context.fillStyle = color;
     context.beginPath();
-    context.arc(x + pinSize / 2, y + pinSize / 2, pinSize / 2, 0, Math.PI * 2);
+    context.arc(anchorX, anchorY, pinSize / 2, 0, Math.PI * 2);
     context.fill();
     context.fillStyle = "#ffffff";
     context.textAlign = "center";
-    context.fillText(String(index + 1), x + pinSize / 2, y + pinSize / 2);
+    context.fillText(String(index + 1), anchorX, anchorY);
   });
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
@@ -188,14 +200,19 @@ export function exportPrintableReport(report: AuditReport) {
   }
 
   const findings = report.findings
-    .map(
-      (finding, index) => `<article>
+    .map((finding, index) => {
+      const evidence = finding.evidence?.length
+        ? `<ul>${finding.evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+        : "";
+
+      return `<article>
         <h2>${index + 1}. ${escapeHtml(finding.title)}</h2>
         <p><strong>${escapeHtml(finding.severity)}</strong> · ${escapeHtml(finding.category)} · ${Math.round(finding.confidence * 100)}% confidence</p>
         <p>${escapeHtml(finding.description)}</p>
-        <p><strong>Fix:</strong> ${escapeHtml(finding.recommendation)}</p>
-      </article>`
-    )
+        ${evidence ? `<p><strong>Evidence:</strong></p>${evidence}` : ""}
+        <p><strong>Fix:</strong> ${escapeHtml(finding.fixPrompt ?? finding.recommendation)}</p>
+      </article>`;
+    })
     .join("");
 
   printWindow.document.write(`<!doctype html>

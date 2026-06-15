@@ -1,4 +1,5 @@
 import type { RuleDefinition } from "@/types/audit";
+import { hotspotRegion, metricPercent } from "@/rules/regions";
 
 const mobileWidths = [320, 375, 390, 414];
 
@@ -57,16 +58,26 @@ export const responsiveRules: RuleDefinition[] = [
           status: "warning",
           confidence: 0.68,
           scoreImpact: 14,
-          region: {
-            x: 0.06,
-            y: 0.14,
-            width: 0.88,
-            height: 0.74,
-            label: "Mobile layout stack"
-          },
           title: "Dense layout may regress on small screens",
           description: "The selected mobile viewport has dense sampled regions and crowded edges, which often exposes wrapping or clipping at small widths.",
-          recommendation: "Review the highlighted stack at 320px, 375px, 390px, and 414px before shipping."
+          region: hotspotRegion(
+            metrics,
+            {
+              x: 0.06,
+              y: 0.14,
+              width: 0.88,
+              height: 0.74,
+              label: "Mobile layout stack"
+            },
+            "Densest mobile stack"
+          ),
+          recommendation: "Review the highlighted stack at 320px, 375px, 390px, and 414px before shipping.",
+          evidence: [
+            `${metricPercent(metrics.busyRegionRatio)} of sampled regions are busy.`,
+            `Boundary activity is ${metricPercent(metrics.edgeCrowding)} at ${viewport.label}.`
+          ],
+          fixPrompt:
+            "Open the same screen at common mobile widths and reduce wrapping pressure around the highlighted stack."
         }
       ];
     }

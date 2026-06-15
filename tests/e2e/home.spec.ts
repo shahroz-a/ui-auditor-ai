@@ -79,6 +79,62 @@ test("long screenshot names and the issue rail stay within their columns", async
   expect(layout.recentItemOverflow).toBeLessThanOrEqual(0);
 });
 
+test("annotated preview shows selected issue callout with fix context", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+
+  await page.locator('input[type="file"]').setInputFiles({
+    buffer: onePixelPng,
+    mimeType: "image/png",
+    name: "audit-callout.png"
+  });
+
+  await expect(page.getByRole("heading", { name: "Audit report" })).toBeVisible({ timeout: 10_000 });
+
+  const review = page.locator('[aria-labelledby="workspace-title"]');
+  const callout = review.getByTestId("selected-finding-callout");
+  await expect(review.getByRole("button", { name: /Focus issue 1:/ }).first()).toBeVisible();
+  await expect(callout.getByText("Full viewport", { exact: true })).toBeVisible();
+  await expect(callout.getByText("Audit a full viewport capture at 320px wide or larger.")).toBeVisible();
+  await expect(callout.getByRole("button", { name: "Previous bug" })).toBeVisible();
+  await expect(callout.getByRole("button", { name: "Next bug" })).toBeVisible();
+
+  const frame = review.getByTestId("screenshot-preview-frame");
+  await callout.getByRole("button", { name: "Next bug" }).click();
+  await expect(frame).toHaveAttribute("data-zoomed", "true");
+  await expect(review.getByRole("button", { name: "Zoom out" })).toBeVisible();
+
+  const calloutBounds = await page.evaluate(() => {
+    const frameElement = document.querySelector<HTMLElement>('[data-testid="screenshot-preview-frame"]');
+    const calloutElement = document.querySelector<HTMLElement>('[data-testid="selected-finding-callout"]');
+
+    if (!frameElement || !calloutElement) {
+      return null;
+    }
+
+    const frameRect = frameElement.getBoundingClientRect();
+    const calloutRect = calloutElement.getBoundingClientRect();
+
+    return {
+      bottomGap: frameRect.bottom - calloutRect.bottom,
+      overflowY: window.getComputedStyle(calloutElement).overflowY,
+      topGap: calloutRect.top - frameRect.top
+    };
+  });
+
+  expect(calloutBounds).not.toBeNull();
+  expect(calloutBounds?.topGap ?? -1).toBeGreaterThanOrEqual(-1);
+  expect(calloutBounds?.bottomGap ?? -1).toBeGreaterThanOrEqual(-1);
+  expect(calloutBounds?.overflowY).toBe("auto");
+
+  await review.getByRole("button", { name: "Zoom out" }).click();
+  await expect(frame).toHaveAttribute("data-zoomed", "false");
+  await expect(review.getByRole("button", { exact: true, name: "Focus issue" })).toBeVisible();
+
+  await review.getByRole("button", { exact: true, name: "Focus issue" }).click();
+  await expect(frame).toHaveAttribute("data-zoomed", "true");
+});
+
 test("desktop side rails match the middle column height", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === "mobile", "Desktop-only rail behavior.");
 

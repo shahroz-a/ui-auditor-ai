@@ -119,6 +119,24 @@ export async function analyzeScreenshotPixels(src: string): Promise<VisualMetric
   }
 
   const busyCells = cellEdges.filter((edges, index) => normalizedActivity(edges, cellPixels[index] ?? 0) > 0.42).length;
+  const cellActivity = cellEdges.map((edges, index) => Number(normalizedActivity(edges, cellPixels[index] ?? 0).toFixed(3)));
+  const hotspots = cellActivity
+    .map((activity, index) => {
+      const cellX = index % GRID_SIZE;
+      const cellY = Math.floor(index / GRID_SIZE);
+
+      return {
+        x: Number((cellX / GRID_SIZE).toFixed(3)),
+        y: Number((cellY / GRID_SIZE).toFixed(3)),
+        width: Number((1 / GRID_SIZE).toFixed(3)),
+        height: Number((1 / GRID_SIZE).toFixed(3)),
+        activity,
+        label: `Attention cell ${cellX + 1},${cellY + 1}`
+      };
+    })
+    .filter((cell) => cell.activity > 0.16)
+    .sort((first, second) => second.activity - first.activity)
+    .slice(0, 5);
   const edgeDensity = Math.min(1, totalEdges / pixelCount);
   const edgeCrowding = normalizedActivity(borderEdges, borderPixels);
   const leftActivity = normalizedActivity(leftEdges, Math.ceil(pixelCount / 2));
@@ -141,6 +159,7 @@ export async function analyzeScreenshotPixels(src: string): Promise<VisualMetric
     leftActivity: Number(leftActivity.toFixed(3)),
     rightActivity: Number(rightActivity.toFixed(3)),
     topActivity: Number(topActivity.toFixed(3)),
-    bottomActivity: Number(bottomActivity.toFixed(3))
+    bottomActivity: Number(bottomActivity.toFixed(3)),
+    hotspots
   };
 }

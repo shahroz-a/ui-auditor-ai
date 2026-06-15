@@ -36,6 +36,15 @@ export interface AuditViewport {
   source: "uploaded" | "estimated" | "custom";
 }
 
+export interface VisualHotspot {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  activity: number;
+  label: string;
+}
+
 export interface VisualMetrics {
   sampleWidth: number;
   sampleHeight: number;
@@ -52,6 +61,7 @@ export interface VisualMetrics {
   rightActivity: number;
   topActivity: number;
   bottomActivity: number;
+  hotspots: VisualHotspot[];
 }
 
 export interface AuditFinding {
@@ -66,6 +76,8 @@ export interface AuditFinding {
   title: string;
   description: string;
   recommendation: string;
+  evidence?: string[];
+  fixPrompt?: string;
 }
 
 export interface RuleCheck {

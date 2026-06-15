@@ -1,4 +1,5 @@
 import type { RuleDefinition } from "@/types/audit";
+import { hotspotRegion, metricPercent } from "@/rules/regions";
 
 export const typographyRules: RuleDefinition[] = [
   {
@@ -84,16 +85,26 @@ export const typographyRules: RuleDefinition[] = [
           status: "warning",
           confidence: 0.64,
           scoreImpact: 13,
-          region: {
-            x: 0.12,
-            y: 0.1,
-            width: 0.76,
-            height: 0.62,
-            label: "Hierarchy stack"
-          },
+          region: hotspotRegion(
+            metrics,
+            {
+              x: 0.12,
+              y: 0.1,
+              width: 0.76,
+              height: 0.62,
+              label: "Hierarchy stack"
+            },
+            "Flat hierarchy cluster"
+          ),
           title: "Hierarchy appears visually flat",
           description: "The sampled screenshot has limited tonal and color separation, which often means headings, labels, and actions are not differentiated enough.",
-          recommendation: "Strengthen heading scale, weight, section rhythm, or key action contrast in the highlighted area."
+          recommendation: "Strengthen heading scale, weight, section rhythm, or key action contrast in the highlighted area.",
+          evidence: [
+            `Contrast spread is ${metricPercent(metrics.contrastSpread)}.`,
+            `Color complexity is ${metricPercent(metrics.colorComplexity)}.`
+          ],
+          fixPrompt:
+            "Strengthen heading scale, weight, and key action contrast in the highlighted cluster before changing unrelated typography."
         }
       ];
     }

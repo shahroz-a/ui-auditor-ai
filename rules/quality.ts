@@ -1,4 +1,5 @@
 import type { RuleDefinition } from "@/types/audit";
+import { hotspotRegion, metricPercent } from "@/rules/regions";
 
 export const qualityRules: RuleDefinition[] = [
   {
@@ -53,16 +54,26 @@ export const qualityRules: RuleDefinition[] = [
           status: "warning",
           confidence: 0.6,
           scoreImpact: 6,
-          region: {
-            x: 0.08,
-            y: 0.08,
-            width: 0.84,
-            height: 0.76,
-            label: "Soft visual area"
-          },
+          region: hotspotRegion(
+            metrics,
+            {
+              x: 0.08,
+              y: 0.08,
+              width: 0.84,
+              height: 0.76,
+              label: "Soft visual area"
+            },
+            "Soft visual cluster"
+          ),
           title: "Screenshot may be too soft for detailed review",
           description: "The browser sampler found very little edge definition, which can happen with blurred, scaled, or low-quality screenshots.",
-          recommendation: "Use a native-resolution capture so small labels and controls can be reviewed accurately."
+          recommendation: "Use a native-resolution capture so small labels and controls can be reviewed accurately.",
+          evidence: [
+            `Edge density is ${metricPercent(metrics.edgeDensity)}.`,
+            `Contrast spread is ${metricPercent(metrics.contrastSpread)}.`
+          ],
+          fixPrompt:
+            "Recapture at native scale before making fine typography or icon changes based on this screenshot."
         }
       ];
     }

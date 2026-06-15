@@ -1,4 +1,5 @@
 import type { RuleDefinition } from "@/types/audit";
+import { hotspotRegion, metricPercent } from "@/rules/regions";
 
 export const accessibilityRules: RuleDefinition[] = [
   {
@@ -83,16 +84,26 @@ export const accessibilityRules: RuleDefinition[] = [
           status: "warning",
           confidence: 0.7,
           scoreImpact: 14,
-          region: {
-            x: 0.12,
-            y: 0.18,
-            width: 0.76,
-            height: 0.56,
-            label: "Low-contrast content region"
-          },
+          region: hotspotRegion(
+            metrics,
+            {
+              x: 0.12,
+              y: 0.18,
+              width: 0.76,
+              height: 0.56,
+              label: "Low-contrast content region"
+            },
+            "Low-contrast attention area"
+          ),
           title: "Visual contrast separation looks weak",
           description: "Local pixel sampling found low luminance separation, which can make labels, controls, and dividers hard to distinguish.",
-          recommendation: "Increase foreground/background contrast and avoid low-contrast dividers around the highlighted content."
+          recommendation: "Increase foreground/background contrast and avoid low-contrast dividers around the highlighted content.",
+          evidence: [
+            `Contrast spread is ${metricPercent(metrics.contrastSpread)}.`,
+            `Edge density is ${metricPercent(metrics.edgeDensity)}, so boundaries may be hard to distinguish.`
+          ],
+          fixPrompt:
+            "Inspect labels, dividers, and controls in the highlighted area and increase foreground/background contrast where the UI reads too flat."
         }
       ];
     }

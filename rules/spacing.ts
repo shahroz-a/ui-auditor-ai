@@ -1,4 +1,5 @@
 import type { RuleDefinition } from "@/types/audit";
+import { edgeActivityRegion, hotspotRegion, metricPercent, strongestEdge } from "@/rules/regions";
 
 const supportedWidths = [320, 375, 390, 768, 1024, 1280, 1440, 1920, 2560, 3840];
 
@@ -82,6 +83,7 @@ export const spacingRules: RuleDefinition[] = [
       }
 
       const crowded = metrics.blankEdgeRatio < 0.06;
+      const activeEdge = strongestEdge(metrics);
 
       return [
         {
@@ -92,20 +94,34 @@ export const spacingRules: RuleDefinition[] = [
           status: "warning",
           confidence: crowded ? 0.72 : 0.62,
           scoreImpact: crowded ? 14 : 6,
-          region: {
-            x: 0.02,
-            y: 0.02,
-            width: 0.96,
-            height: 0.96,
-            label: "Outer spacing band"
-          },
+          region: crowded
+            ? edgeActivityRegion(metrics, "Crowded spacing edge")
+            : {
+                x: 0.02,
+                y: 0.02,
+                width: 0.96,
+                height: 0.96,
+                label: "Outer spacing band"
+              },
           title: crowded ? "Content appears crowded against the edges" : "Outer whitespace appears excessive",
           description: crowded
             ? "The screenshot has very little quiet space around the perimeter, a common signal for clipped or cramped layouts."
             : "Large quiet bands around the perimeter can make the content feel detached or under-composed.",
           recommendation: crowded
             ? "Add consistent padding around page edges and check that sticky controls are not clipped."
-            : "Tighten the outer container or rebalance the highlighted whitespace against the main content."
+            : "Tighten the outer container or rebalance the highlighted whitespace against the main content.",
+          evidence: crowded
+            ? [
+                `${activeEdge.edge} edge is the busiest boundary at ${metricPercent(activeEdge.activity)}.`,
+                `Quiet outer space is only ${metricPercent(metrics.blankEdgeRatio)}.`
+              ]
+            : [
+                `Quiet outer space is ${metricPercent(metrics.blankEdgeRatio)}.`,
+                "The active content appears visually detached from the viewport frame."
+              ],
+          fixPrompt: crowded
+            ? "Add or normalize page padding around the highlighted edge, then verify sticky elements and long text stay inside the viewport."
+            : "Reduce the outer container gap or give the primary content a stronger anchor so the page does not feel under-composed."
         }
       ];
     }
@@ -128,16 +144,26 @@ export const spacingRules: RuleDefinition[] = [
           status: "warning",
           confidence: 0.68,
           scoreImpact: 13,
-          region: {
-            x: 0.08,
-            y: 0.12,
-            width: 0.84,
-            height: 0.7,
-            label: "Dense content cluster"
-          },
+          region: hotspotRegion(
+            metrics,
+            {
+              x: 0.08,
+              y: 0.12,
+              width: 0.84,
+              height: 0.7,
+              label: "Dense content cluster"
+            },
+            "Dense content hotspot"
+          ),
           title: "Interface density may be too high",
           description: "Canvas sampling found many busy regions packed together, which can weaken scanability and spacing consistency.",
-          recommendation: "Increase section spacing, simplify repeated rows, or break dense content into clearer groups."
+          recommendation: "Increase section spacing, simplify repeated rows, or break dense content into clearer groups.",
+          evidence: [
+            `${metricPercent(metrics.busyRegionRatio)} of sampled cells are visually busy.`,
+            `Edge density is ${metricPercent(metrics.edgeDensity)}.`
+          ],
+          fixPrompt:
+            "Simplify or regroup the highlighted cluster, then add spacing between repeated elements until the scan path feels calmer."
         }
       ];
     }
